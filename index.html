@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Encuesta de Clima Laboral – Desarrollo</title>
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+      background-image: url(./img/fondo-escencial.jpg);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-attachment: fixed;
+      color: #020f27;
+    }
+
+    .container {
+      width: min(980px, 100% - 48px);
+      margin: 24px auto;
+      background: rgba(255, 255, 255, .92);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, .18);
+      padding: 40px 40px 36px;
+      position: relative
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px
+    }
+
+    .title {
+      font-size: clamp(26px, 3.3vw, 34px);
+      font-weight: 700;
+      letter-spacing: -.3px;
+      color: #020f27;
+      margin-bottom: 6px
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.5
+    }
+
+    .info {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      border-left: 4px solid #0b4a6e;
+      border-radius: 16px;
+      padding: 18px 18px 14px;
+      margin-bottom: 24px
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(11, 74, 110, .12);
+      color: #0b4a6e;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 999px
+    }
+
+    .info div {
+      color: #475569;
+      font-size: 14px;
+      line-height: 1.6
+    }
+
+    .progress-wrap {
+      margin: 0 0 26px
+    }
+
+    .progress-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #475569;
+      font-weight: 600
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 100%);
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, .04)
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #0b4a6e 0%, #020f27 100%);
+      transition: width .35s ease;
+      border-radius: 999px
+    }
+
+    .section {
+      margin-bottom: 28px;
+      padding-bottom: 6px
+    }
+
+    .section h3 {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #020f27;
+      margin-bottom: 18px;
+      letter-spacing: -.2px
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px
+    }
+
+    @media (min-width:720px) {
+      .row.two {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .field,
+    .question-box {
+      background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, .03)
+    }
+
+    .question-box label.title,
+    .field label.title {
+      font-weight: 600;
+      color: #020f27;
+      font-size: 15px;
+      line-height: 1.5
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      background: #fff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 12px;
+      outline: none;
+      font-size: 14px;
+      transition: all .25s ease
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #0b4a6e;
+      box-shadow: 0 0 0 4px rgba(11, 74, 110, .12);
+      transform: translateY(-1px)
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical
+    }
+
+    .likert {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(48px, 1fr));
+      gap: 10px
+    }
+
+    .logo {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      height: 64px;
+      width: auto;
+    }
+
+    .likert.l4 {
+      grid-template-columns: repeat(4, minmax(48px, 1fr))
+    }
+
+    .pill {
+      position: relative;
+      border: 2px solid #e2e8f0;
+      background: #fff;
+      color: #475569;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      padding: 10px 6px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all .2s ease;
+      user-select: none
+    }
+
+    .pill:hover {
+      border-color: #0b4a6e;
+      transform: translateY(-2px)
+    }
+
+    .pill input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer
+    }
+
+    .pill.active {
+      background: linear-gradient(135deg, #0b4a6e 0%, #020f27 100%);
+      color: #fff;
+      border-color: #020f27;
+      box-shadow: 0 4px 14px rgba(11, 74, 110, .25)
+    }
+
+    .scale-hint {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: #94a3b8;
+      margin-top: -4px
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      padding: 14px 22px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 14px;
+      background: linear-gradient(135deg, #0b4a6e 0%, #020f27 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(11, 74, 110, .3);
+      transition: all .25s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+    }
+
+    h1 {
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(11, 74, 110, .25)
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      box-shadow: none
+    }
+
+    .btn[disabled] {
+      opacity: .7;
+      cursor: not-allowed
+    }
+
+    .result-box {
+      display: none;
+      text-align: center;
+      padding: 40px 8px 18px
+    }
+
+    .result-box .big {
+      font-size: clamp(22px, 2.4vw, 28px);
+      font-weight: 700;
+      color: #020f27;
+      margin-bottom: 6px
+    }
+
+    .muted {
+      color: #94a3b8;
+      font-size: 14px
+    }
+
+    @media (max-width:768px) {
+      .container {
+        padding: 28px 18px 20px
+      }
+
+      .logo {
+        height: 48px;
+        top: 16px;
+        left: 16px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .likert {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+      }
+
+      .pill {
+        min-width: 0;
+      }
+
+      .actions {
+        flex-direction: column-reverse;
+        align-items: stretch
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="app">
+    <img src="./img/logo-escencial.png" alt="Escencial Consultora" class="logo" />
+    <header>
+      <h1 class="title">Encuesta de Clima Laboral – Desarrollo</h1>
+      <p class="subtitle">Tu participación es valiosa. Responder te tomará pocos minutos.</p>
+    </header>
+
+    <div class="content">
+      <div class="info">
+        <div class="badge">ℹ️ Instrucciones</div>
+        <div style="margin-top:10px">
+          <div>• La encuesta es <b>100 % anónima</b>.</div>
+          <div>• Los <b>datos demográficos son opcionales</b> y se usan solo con fines estadísticos.</div>
+          <div>• <b>Escala Likert de 5 puntos</b>, salvo donde se indique lo contrario.</div>
+        </div>
+      </div>
+
+      <form id="surveyForm" novalidate>
+        <!-- Progreso -->
+        <div class="progress-wrap">
+          <div class="progress-top">
+            <div class="badge" style="background:rgba(11,74,110,.09);">Progreso</div>
+            <div id="progressText">Pregunta 0 de 47</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <!-- A. Datos contextuales -->
+        <div class="section">
+          <h3>A. Datos contextuales (opcionales)</h3>
+          <div class="row two">
+            <div class="field question-box" data-qkey="ctx_area">
+              <label class="title" for="ctx_area">Área/Unidad</label>
+              <input type="text" id="ctx_area" placeholder="Ej.: Desarrollo, Comercial, Soporte" />
+            </div>
+            <div class="field question-box" data-qkey="ctx_antiguedad">
+              <label class="title" for="ctx_antiguedad">Antigüedad en la organización</label>
+              <select id="ctx_antiguedad">
+                <option value="">(Opcional)</option>
+                <option>Menos de 1 año</option>
+                <option>1–3 años</option>
+                <option>3–5 años</option>
+                <option>Más de 5 años</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. Comunicación Interna -->
+        <div class="section">
+          <h3>1. Comunicación Interna</h3>
+          <div class="field question-box" data-q="1" data-type="likert5">
+            <label class="title">1. En mi lugar de trabajo la información circula de manera clara y oportuna.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 1">
+              <label class="pill"><input type="radio" name="q1" value="1">1</label>
+              <label class="pill"><input type="radio" name="q1" value="2">2</label>
+              <label class="pill"><input type="radio" name="q1" value="3">3</label>
+              <label class="pill"><input type="radio" name="q1" value="4">4</label>
+              <label class="pill"><input type="radio" name="q1" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="2" data-type="likert5">
+            <label class="title">2. Puedo expresar mis ideas y opiniones libremente.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 2">
+              <label class="pill"><input type="radio" name="q2" value="1">1</label>
+              <label class="pill"><input type="radio" name="q2" value="2">2</label>
+              <label class="pill"><input type="radio" name="q2" value="3">3</label>
+              <label class="pill"><input type="radio" name="q2" value="4">4</label>
+              <label class="pill"><input type="radio" name="q2" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="3" data-type="likert5">
+            <label class="title">3. Me siento escuchado/a por mis superiores.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 3">
+              <label class="pill"><input type="radio" name="q3" value="1">1</label>
+              <label class="pill"><input type="radio" name="q3" value="2">2</label>
+              <label class="pill"><input type="radio" name="q3" value="3">3</label>
+              <label class="pill"><input type="radio" name="q3" value="4">4</label>
+              <label class="pill"><input type="radio" name="q3" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="4" data-type="likert5">
+            <label class="title">4. Recibo la información necesaria para realizar bien mi trabajo.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 4">
+              <label class="pill"><input type="radio" name="q4" value="1">1</label>
+              <label class="pill"><input type="radio" name="q4" value="2">2</label>
+              <label class="pill"><input type="radio" name="q4" value="3">3</label>
+              <label class="pill"><input type="radio" name="q4" value="4">4</label>
+              <label class="pill"><input type="radio" name="q4" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="5" data-type="likert5">
+            <label class="title">5. Existe coherencia entre lo que la empresa comunica y lo que hace.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 5">
+              <label class="pill"><input type="radio" name="q5" value="1">1</label>
+              <label class="pill"><input type="radio" name="q5" value="2">2</label>
+              <label class="pill"><input type="radio" name="q5" value="3">3</label>
+              <label class="pill"><input type="radio" name="q5" value="4">4</label>
+              <label class="pill"><input type="radio" name="q5" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Totalmente en desacuerdo</span><span>Totalmente de acuerdo</span></div>
+          </div>
+        </div>
+
+        <!-- B. Liderazgo y gestión -->
+        <div class="section">
+          <h3>B. Liderazgo y gestión</h3>
+          <div class="field question-box" data-q="6" data-type="likert5-custom">
+            <label class="title">6. Califica el liderazgo de tu supervisor/a inmediato/a.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 6">
+              <label class="pill"><input type="radio" name="q6" value="1" data-label="Muy malo">Muy malo</label>
+              <label class="pill"><input type="radio" name="q6" value="2" data-label="Malo">Malo</label>
+              <label class="pill"><input type="radio" name="q6" value="3" data-label="Regular">Regular</label>
+              <label class="pill"><input type="radio" name="q6" value="4" data-label="Bueno">Bueno</label>
+              <label class="pill"><input type="radio" name="q6" value="5" data-label="Muy bueno">Muy bueno</label>
+            </div>
+          </div>
+
+          <div class="field question-box" data-q="7" data-type="likert5">
+            <label class="title">7. La alta dirección comunica y mantiene una visión clara de futuro.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 7">
+              <label class="pill"><input type="radio" name="q7" value="1">1</label>
+              <label class="pill"><input type="radio" name="q7" value="2">2</label>
+              <label class="pill"><input type="radio" name="q7" value="3">3</label>
+              <label class="pill"><input type="radio" name="q7" value="4">4</label>
+              <label class="pill"><input type="radio" name="q7" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="8" data-type="likert5">
+            <label class="title">8. Me siento apoyado/a por mis superiores para resolver problemas y decidir.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 8">
+              <label class="pill"><input type="radio" name="q8" value="1">1</label>
+              <label class="pill"><input type="radio" name="q8" value="2">2</label>
+              <label class="pill"><input type="radio" name="q8" value="3">3</label>
+              <label class="pill"><input type="radio" name="q8" value="4">4</label>
+              <label class="pill"><input type="radio" name="q8" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="9" data-type="likert5">
+            <label class="title">9. Los líderes fomentan la comunicación abierta y el feedback.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 9">
+              <label class="pill"><input type="radio" name="q9" value="1">1</label>
+              <label class="pill"><input type="radio" name="q9" value="2">2</label>
+              <label class="pill"><input type="radio" name="q9" value="3">3</label>
+              <label class="pill"><input type="radio" name="q9" value="4">4</label>
+              <label class="pill"><input type="radio" name="q9" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="10" data-type="likert5">
+            <label class="title">10. La información sobre estrategia y proyectos es clara y oportuna.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 10">
+              <label class="pill"><input type="radio" name="q10" value="1">1</label>
+              <label class="pill"><input type="radio" name="q10" value="2">2</label>
+              <label class="pill"><input type="radio" name="q10" value="3">3</label>
+              <label class="pill"><input type="radio" name="q10" value="4">4</label>
+              <label class="pill"><input type="radio" name="q10" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="11" data-type="likert5">
+            <label class="title">11. Recibo a tiempo la información necesaria para hacer bien mi trabajo.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 11">
+              <label class="pill"><input type="radio" name="q11" value="1">1</label>
+              <label class="pill"><input type="radio" name="q11" value="2">2</label>
+              <label class="pill"><input type="radio" name="q11" value="3">3</label>
+              <label class="pill"><input type="radio" name="q11" value="4">4</label>
+              <label class="pill"><input type="radio" name="q11" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="12" data-type="likert5">
+            <label class="title">12. Puedo expresar opiniones y preocupaciones sin temor a consecuencias.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 12">
+              <label class="pill"><input type="radio" name="q12" value="1">1</label>
+              <label class="pill"><input type="radio" name="q12" value="2">2</label>
+              <label class="pill"><input type="radio" name="q12" value="3">3</label>
+              <label class="pill"><input type="radio" name="q12" value="4">4</label>
+              <label class="pill"><input type="radio" name="q12" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="13" data-type="open">
+            <label class="title">13. (Abierta) ¿Alguna recomendación breve para mejorar la comunicación o el
+              liderazgo?</label>
+            <textarea id="q13" placeholder="Escribe tu recomendación..."></textarea>
+          </div>
+        </div>
+
+        <!-- C. Reuniones y coordinación -->
+        <div class="section">
+          <h3>C. Reuniones y coordinación</h3>
+          <div class="field question-box" data-q="14" data-type="likert5-custom">
+            <label class="title">14. La calidad de las reuniones (objetivos claros, coordinación, duración) es:</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 14">
+              <label class="pill"><input type="radio" name="q14" value="1" data-label="Muy malas">Muy malas</label>
+              <label class="pill"><input type="radio" name="q14" value="2" data-label="Malas">Malas</label>
+              <label class="pill"><input type="radio" name="q14" value="3" data-label="Aceptables">Aceptables</label>
+              <label class="pill"><input type="radio" name="q14" value="4" data-label="Buenas">Buenas</label>
+              <label class="pill"><input type="radio" name="q14" value="5" data-label="Muy buenas">Muy buenas</label>
+            </div>
+          </div>
+
+          <div class="field question-box" data-q="15" data-type="open">
+            <label class="title">15. (Abierta) Sugerencias para mejorar las reuniones.</label>
+            <textarea id="q15" placeholder="Tus sugerencias..."></textarea>
+          </div>
+        </div>
+
+        <!-- D. Ambiente de trabajo -->
+        <div class="section">
+          <h3>D. Ambiente de trabajo</h3>
+          <div class="field question-box" data-q="16" data-type="likert5-custom">
+            <label class="title">16. El apoyo y la cooperación entre colegas es:</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 16">
+              <label class="pill"><input type="radio" name="q16" value="1" data-label="Muy pobre">Muy pobre</label>
+              <label class="pill"><input type="radio" name="q16" value="2" data-label="Pobre">Pobre</label>
+              <label class="pill"><input type="radio" name="q16" value="3" data-label="Regular">Regular</label>
+              <label class="pill"><input type="radio" name="q16" value="4" data-label="Bueno">Bueno</label>
+              <label class="pill"><input type="radio" name="q16" value="5" data-label="Excelente">Excelente</label>
+            </div>
+          </div>
+
+          <div class="field question-box" data-q="17" data-type="likert5">
+            <label class="title">17. Me siento valorado/a por el trabajo que realizo.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 17">
+              <label class="pill"><input type="radio" name="q17" value="1">1</label>
+              <label class="pill"><input type="radio" name="q17" value="2">2</label>
+              <label class="pill"><input type="radio" name="q17" value="3">3</label>
+              <label class="pill"><input type="radio" name="q17" value="4">4</label>
+              <label class="pill"><input type="radio" name="q17" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="18" data-type="likert5">
+            <label class="title">18. Existen favoritismos que afectan el trato.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 18">
+              <label class="pill"><input type="radio" name="q18" value="1">1</label>
+              <label class="pill"><input type="radio" name="q18" value="2">2</label>
+              <label class="pill"><input type="radio" name="q18" value="3">3</label>
+              <label class="pill"><input type="radio" name="q18" value="4">4</label>
+              <label class="pill"><input type="radio" name="q18" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="19" data-type="likert5">
+            <label class="title">19. El ambiente físico (herramientas, seguridad, comodidad) es adecuado.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 19">
+              <label class="pill"><input type="radio" name="q19" value="1">1</label>
+              <label class="pill"><input type="radio" name="q19" value="2">2</label>
+              <label class="pill"><input type="radio" name="q19" value="3">3</label>
+              <label class="pill"><input type="radio" name="q19" value="4">4</label>
+              <label class="pill"><input type="radio" name="q19" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+        </div>
+
+        <!-- E. Desarrollo y crecimiento -->
+        <div class="section">
+          <h3>E. Desarrollo y crecimiento</h3>
+          <div class="field question-box" data-q="20" data-type="likert4">
+            <label class="title">20. En esta organización hay oportunidades de desarrollo de carrera. (4 puntos)</label>
+            <div class="likert l4" role="radiogroup" aria-label="Pregunta 20">
+              <label class="pill"><input type="radio" name="q20" value="1" data-label="Ninguna">Ninguna</label>
+              <label class="pill"><input type="radio" name="q20" value="2" data-label="Pocas">Pocas</label>
+              <label class="pill"><input type="radio" name="q20" value="3" data-label="Algunas">Algunas</label>
+              <label class="pill"><input type="radio" name="q20" value="4" data-label="Muchas">Muchas</label>
+            </div>
+          </div>
+
+          <div class="field question-box" data-q="20a" data-type="open">
+            <label class="title">20a. (Abierta) Indica alguna consideración específica.</label>
+            <textarea id="q20a" placeholder="Tu respuesta..."></textarea>
+          </div>
+
+          <div class="field question-box" data-q="21" data-type="likert5">
+            <label class="title">21. Recibo la capacitación necesaria para desempeñar mi puesto.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 21">
+              <label class="pill"><input type="radio" name="q21" value="1">1</label>
+              <label class="pill"><input type="radio" name="q21" value="2">2</label>
+              <label class="pill"><input type="radio" name="q21" value="3">3</label>
+              <label class="pill"><input type="radio" name="q21" value="4">4</label>
+              <label class="pill"><input type="radio" name="q21" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="22" data-type="likert5">
+            <label class="title">22. La evaluación de desempeño o el feedback regular es justa y promueve el
+              desarrollo.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 22">
+              <label class="pill"><input type="radio" name="q22" value="1">1</label>
+              <label class="pill"><input type="radio" name="q22" value="2">2</label>
+              <label class="pill"><input type="radio" name="q22" value="3">3</label>
+              <label class="pill"><input type="radio" name="q22" value="4">4</label>
+              <label class="pill"><input type="radio" name="q22" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="22a" data-type="open">
+            <label class="title">22a. (Abierta) Sugiere mejoras al proceso de evaluación/feedback.</label>
+            <textarea id="q22a" placeholder="Tu sugerencia..."></textarea>
+          </div>
+
+          <div class="field question-box" data-q="23" data-type="likert5">
+            <label class="title">23. Mis capacidades y habilidades son reconocidas adecuadamente.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 23">
+              <label class="pill"><input type="radio" name="q23" value="1">1</label>
+              <label class="pill"><input type="radio" name="q23" value="2">2</label>
+              <label class="pill"><input type="radio" name="q23" value="3">3</label>
+              <label class="pill"><input type="radio" name="q23" value="4">4</label>
+              <label class="pill"><input type="radio" name="q23" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+        </div>
+
+        <!-- F. Remuneración y beneficios -->
+        <div class="section">
+          <h3>F. Remuneración y beneficios</h3>
+          <div class="field question-box" data-q="24" data-type="likert5">
+            <label class="title">24. Satisfacción con tu salario respecto a tus responsabilidades.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 24">
+              <label class="pill"><input type="radio" name="q24" value="1">1</label>
+              <label class="pill"><input type="radio" name="q24" value="2">2</label>
+              <label class="pill"><input type="radio" name="q24" value="3">3</label>
+              <label class="pill"><input type="radio" name="q24" value="4">4</label>
+              <label class="pill"><input type="radio" name="q24" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Muy insatisfecho/a</span><span>Muy satisfecho/a</span></div>
+          </div>
+
+          <div class="field question-box" data-q="25" data-type="likert5">
+            <label class="title">25. Equidad salarial entre niveles y roles.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 25">
+              <label class="pill"><input type="radio" name="q25" value="1">1</label>
+              <label class="pill"><input type="radio" name="q25" value="2">2</label>
+              <label class="pill"><input type="radio" name="q25" value="3">3</label>
+              <label class="pill"><input type="radio" name="q25" value="4">4</label>
+              <label class="pill"><input type="radio" name="q25" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="26" data-type="likert5">
+            <label class="title">26. Transparencia en criterios para incrementos y bonos.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 26">
+              <label class="pill"><input type="radio" name="q26" value="1">1</label>
+              <label class="pill"><input type="radio" name="q26" value="2">2</label>
+              <label class="pill"><input type="radio" name="q26" value="3">3</label>
+              <label class="pill"><input type="radio" name="q26" value="4">4</label>
+              <label class="pill"><input type="radio" name="q26" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="27" data-type="likert5">
+            <label class="title">27. Tu salario respecto al mercado.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 27">
+              <label class="pill"><input type="radio" name="q27" value="1">1</label>
+              <label class="pill"><input type="radio" name="q27" value="2">2</label>
+              <label class="pill"><input type="radio" name="q27" value="3">3</label>
+              <label class="pill"><input type="radio" name="q27" value="4">4</label>
+              <label class="pill"><input type="radio" name="q27" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>Muy por debajo</span><span>Muy por encima</span></div>
+          </div>
+
+          <div class="field question-box" data-q="28" data-type="likert5">
+            <label class="title">28. Los beneficios complementan bien la remuneración.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 28">
+              <label class="pill"><input type="radio" name="q28" value="1">1</label>
+              <label class="pill"><input type="radio" name="q28" value="2">2</label>
+              <label class="pill"><input type="radio" name="q28" value="3">3</label>
+              <label class="pill"><input type="radio" name="q28" value="4">4</label>
+              <label class="pill"><input type="radio" name="q28" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="29" data-type="open">
+            <label class="title">29. (Abierta) ¿Qué mejorarías del paquete de compensación/beneficios?</label>
+            <textarea id="q29" placeholder="Tu respuesta..."></textarea>
+          </div>
+        </div>
+
+        <!-- G. Equidad e inclusión -->
+        <div class="section">
+          <h3>G. Equidad e inclusión</h3>
+          <div class="field question-box" data-q="30" data-type="likert5">
+            <label class="title">30. La empresa fomenta un ambiente de respeto e inclusión.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 30">
+              <label class="pill"><input type="radio" name="q30" value="1">1</label>
+              <label class="pill"><input type="radio" name="q30" value="2">2</label>
+              <label class="pill"><input type="radio" name="q30" value="3">3</label>
+              <label class="pill"><input type="radio" name="q30" value="4">4</label>
+              <label class="pill"><input type="radio" name="q30" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="31" data-type="likert5">
+            <label class="title">31. Se promueve la igualdad de oportunidades.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 31">
+              <label class="pill"><input type="radio" name="q31" value="1">1</label>
+              <label class="pill"><input type="radio" name="q31" value="2">2</label>
+              <label class="pill"><input type="radio" name="q31" value="3">3</label>
+              <label class="pill"><input type="radio" name="q31" value="4">4</label>
+              <label class="pill"><input type="radio" name="q31" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="32" data-type="likert5">
+            <label class="title">32. Las políticas protegen contra cualquier tipo de discriminación.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 32">
+              <label class="pill"><input type="radio" name="q32" value="1">1</label>
+              <label class="pill"><input type="radio" name="q32" value="2">2</label>
+              <label class="pill"><input type="radio" name="q32" value="3">3</label>
+              <label class="pill"><input type="radio" name="q32" value="4">4</label>
+              <label class="pill"><input type="radio" name="q32" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="33" data-type="likert5">
+            <label class="title">33. Los líderes actúan con justicia, sin favoritismos.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 33">
+              <label class="pill"><input type="radio" name="q33" value="1">1</label>
+              <label class="pill"><input type="radio" name="q33" value="2">2</label>
+              <label class="pill"><input type="radio" name="q33" value="3">3</label>
+              <label class="pill"><input type="radio" name="q33" value="4">4</label>
+              <label class="pill"><input type="radio" name="q33" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="34" data-type="likert5">
+            <label class="title">34. La organización brinda apoyos razonables (ajustes, flexibilidad, etc.).</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 34">
+              <label class="pill"><input type="radio" name="q34" value="1">1</label>
+              <label class="pill"><input type="radio" name="q34" value="2">2</label>
+              <label class="pill"><input type="radio" name="q34" value="3">3</label>
+              <label class="pill"><input type="radio" name="q34" value="4">4</label>
+              <label class="pill"><input type="radio" name="q34" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+        </div>
+
+        <!-- H. Bienestar y equilibrio -->
+        <div class="section">
+          <h3>H. Bienestar y equilibrio</h3>
+          <div class="field question-box" data-q="35" data-type="likert5">
+            <label class="title">35. El entorno de trabajo contribuye a mi bienestar físico y mental.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 35">
+              <label class="pill"><input type="radio" name="q35" value="1">1</label>
+              <label class="pill"><input type="radio" name="q35" value="2">2</label>
+              <label class="pill"><input type="radio" name="q35" value="3">3</label>
+              <label class="pill"><input type="radio" name="q35" value="4">4</label>
+              <label class="pill"><input type="radio" name="q35" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="36" data-type="likert5">
+            <label class="title">36. Tengo recursos para cuidar mi bienestar.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 36">
+              <label class="pill"><input type="radio" name="q36" value="1">1</label>
+              <label class="pill"><input type="radio" name="q36" value="2">2</label>
+              <label class="pill"><input type="radio" name="q36" value="3">3</label>
+              <label class="pill"><input type="radio" name="q36" value="4">4</label>
+              <label class="pill"><input type="radio" name="q36" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="37" data-type="likert5">
+            <label class="title">37. Apoyo de la empresa en bienestar emocional.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 37">
+              <label class="pill"><input type="radio" name="q37" value="1">1</label>
+              <label class="pill"><input type="radio" name="q37" value="2">2</label>
+              <label class="pill"><input type="radio" name="q37" value="3">3</label>
+              <label class="pill"><input type="radio" name="q37" value="4">4</label>
+              <label class="pill"><input type="radio" name="q37" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="38" data-type="likert5">
+            <label class="title">38. Puedo equilibrar adecuadamente vida laboral y personal.</label>
+            <div class="likert" role="radiogroup" aria-label="Pregunta 38">
+              <label class="pill"><input type="radio" name="q38" value="1">1</label>
+              <label class="pill"><input type="radio" name="q38" value="2">2</label>
+              <label class="pill"><input type="radio" name="q38" value="3">3</label>
+              <label class="pill"><input type="radio" name="q38" value="4">4</label>
+              <label class="pill"><input type="radio" name="q38" value="5">5</label>
+            </div>
+            <div class="scale-hint"><span>En desacuerdo</span><span>De acuerdo</span></div>
+          </div>
+
+          <div class="field question-box" data-q="39" data-type="open">
+            <label class="title">39. (Abierta) ¿Qué acciones concretas mejorarían el bienestar laboral?</label>
+            <textarea id="q39" placeholder="Escribe tus ideas..."></textarea>
+          </div>
+        </div>
+
+        <!-- I. Recomendaciones y futuro -->
+        <div class="section">
+          <h3>I. Recomendaciones y futuro</h3>
+          <div class="field question-box" data-q="40" data-type="open">
+            <label class="title">40. (Abierta) ¿Qué cambiarías o mejorarías para permanecer en la organización los
+              próximos años?</label>
+            <textarea id="q40" placeholder="Tu respuesta..."></textarea>
+          </div>
+
+          <div class="field question-box" data-q="41" data-type="open">
+            <label class="title">41. (Abierta) ¿Qué aspecto es innegociable para que decidas continuar?</label>
+            <textarea id="q41" placeholder="Tu respuesta..."></textarea>
+          </div>
+
+          <div class="field question-box" data-q="42" data-type="open">
+            <label class="title">42. (Abierta) Aspiraciones para el próximo año: ¿Qué esperas de tu carrera y qué podría
+              hacer la organización para ayudarte?</label>
+            <textarea id="q42" placeholder="Tu respuesta..."></textarea>
+          </div>
+
+          <div class="field question-box" data-q="43" data-type="open">
+            <label class="title">43. (Abierta) Si pudieras elegir solo una iniciativa para mejorar el ambiente laboral,
+              ¿cuál sería y por qué?</label>
+            <textarea id="q43" placeholder="Tu respuesta..."></textarea>
+          </div>
+        </div>
+
+        <!-- BOTONES: Anterior / Siguiente / Limpiar / Enviar -->
+        <div class="actions">
+          <button type="button" class="btn secondary" id="btnAnterior">Anterior</button>
+
+          <button type="button" class="btn" id="btnSiguiente">Siguiente</button>
+          <button type="submit" class="btn" id="btnEnviar">Enviar</button>
+        </div>
+      </form>
+
+      <div class="result-box" id="finalScreen">
+        <p class="big" id="finalMsg">👉 Gracias. Tu encuesta fue enviada con éxito.</p>
+        <p class="muted" id="finalHint">Puedes cerrar esta ventana.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+
+      const WEBHOOK_URL = "https://escencialtest.app.n8n.cloud/webhook-test/c4617a05-13d2-42c5-94ae-93524e46ef8c";
+
+      const form = document.getElementById('surveyForm');
+      const progressText = document.getElementById('progressText');
+      const progressFill = document.getElementById('progressFill');
+
+      const btnEnviar = document.getElementById('btnEnviar');
+      const btnAnterior = document.getElementById('btnAnterior');
+      const btnSiguiente = document.getElementById('btnSiguiente');
+      const finalScreen = document.getElementById('finalScreen');
+      const finalMsg = document.getElementById('finalMsg');
+      const finalHint = document.getElementById('finalHint');
+
+      const sections = Array.from(document.querySelectorAll('.section'));
+      let currentSectionIndex = 0;
+
+      const totalQuestions = 47;
+      const likertGroups = Array.from(document.querySelectorAll('.question-box [type="radio"]'))
+        .reduce((acc, el) => { acc.add(el.name); return acc; }, new Set());
+
+      function updatePillStates(groupName) {
+        document.querySelectorAll(`input[name="${groupName}"]`).forEach(input => {
+          const label = input.closest('.pill');
+          if (label) label.classList.toggle('active', input.checked);
+        });
+      }
+
+      // Navegación entre secciones
+      function showSection(index) {
+        sections.forEach((sec, i) => {
+          sec.style.display = i === index ? 'block' : 'none';
+        });
+        currentSectionIndex = index;
+
+        // Estado de botones
+        if (btnAnterior) {
+          btnAnterior.disabled = index === 0;
+          btnAnterior.style.opacity = index === 0 ? 0.6 : 1;
+        }
+        if (btnSiguiente) {
+          btnSiguiente.style.display = index === sections.length - 1 ? 'none' : 'inline-flex';
+        }
+        if (btnEnviar) {
+          btnEnviar.style.display = index === sections.length - 1 ? 'inline-flex' : 'none';
+        }
+      }
+
+      // Inicializar estado de pills
+      for (const name of likertGroups) {
+        document.querySelectorAll(`input[name="${name}"]`).forEach(input => {
+          input.addEventListener('change', () => { updatePillStates(name); updateProgress(); });
+        });
+        updatePillStates(name);
+      }
+
+      document.querySelectorAll('.question-box input[type="text"], .question-box select, .question-box textarea')
+        .forEach(el => { el.addEventListener('input', updateProgress); el.addEventListener('change', updateProgress); });
+
+      function countAnswered() {
+        let count = 0;
+        for (const group of Array.from(likertGroups)) {
+          if (document.querySelector(`input[name="${group}"]:checked`)) count += 1;
+        }
+        document.querySelectorAll('.question-box input[type="text"], .question-box select, .question-box textarea')
+          .forEach(el => { if ((el.value || '').trim().length > 0) count += 1; });
+        return count;
+      }
+
+      function updateProgress() {
+        const answered = countAnswered();
+        progressText.textContent = `Pregunta ${answered} de ${totalQuestions}`;
+        const pct = Math.max(0, Math.min(100, Math.round((answered / totalQuestions) * 100)));
+        progressFill.style.width = pct + '%';
+      }
+      updateProgress();
+
+      +
+
+        // Botones Anterior / Siguiente
+        btnSiguiente.addEventListener('click', () => {
+          if (currentSectionIndex < sections.length - 1) {
+            showSection(currentSectionIndex + 1);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+
+      btnAnterior.addEventListener('click', () => {
+        if (currentSectionIndex > 0) {
+          showSection(currentSectionIndex - 1);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+
+      // Mostrar primera sección
+      showSection(0);
+
+      function getRadioValue(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        if (!el) return null;
+        const customLabel = el.getAttribute('data-label');
+        return customLabel ? { value: Number(el.value), label: customLabel } : Number(el.value);
+      }
+
+      function buildPayload() {
+        const datos = {
+          metadata: {
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            language: navigator.language || null
+          },
+          context: {
+            area: (document.getElementById('ctx_area').value || '').trim() || null,
+            antiguedad: document.getElementById('ctx_antiguedad').value || null
+          },
+          respuestas: {
+            q1: getRadioValue('q1'), q2: getRadioValue('q2'), q3: getRadioValue('q3'), q4: getRadioValue('q4'), q5: getRadioValue('q5'),
+            q6: getRadioValue('q6'), q7: getRadioValue('q7'), q8: getRadioValue('q8'), q9: getRadioValue('q9'), q10: getRadioValue('q10'),
+            q11: getRadioValue('q11'), q12: getRadioValue('q12'), q13: (document.getElementById('q13').value || '').trim() || null,
+            q14: getRadioValue('q14'), q15: (document.getElementById('q15').value || '').trim() || null,
+            q16: getRadioValue('q16'), q17: getRadioValue('q17'), q18: getRadioValue('q18'), q19: getRadioValue('q19'),
+            q20: getRadioValue('q20'), q20a: (document.getElementById('q20a').value || '').trim() || null,
+            q21: getRadioValue('q21'), q22: getRadioValue('q22'), q22a: (document.getElementById('q22a').value || '').trim() || null,
+            q23: getRadioValue('q23'), q24: getRadioValue('q24'), q25: getRadioValue('q25'), q26: getRadioValue('q26'),
+            q27: getRadioValue('q27'), q28: getRadioValue('q28'), q29: (document.getElementById('q29').value || '').trim() || null,
+            q30: getRadioValue('q30'), q31: getRadioValue('q31'), q32: getRadioValue('q32'), q33: getRadioValue('q33'),
+            q34: getRadioValue('q34'), q35: getRadioValue('q35'), q36: getRadioValue('q36'), q37: getRadioValue('q37'),
+            q38: getRadioValue('q38'), q39: (document.getElementById('q39').value || '').trim() || null,
+            q40: (document.getElementById('q40').value || '').trim() || null,
+            q41: (document.getElementById('q41').value || '').trim() || null,
+            q42: (document.getElementById('q42').value || '').trim() || null,
+            q43: (document.getElementById('q43').value || '').trim() || null
+          }
+        };
+        return datos;
+      }
+
+      async function sendSurvey(datos) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(datos),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res;
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        btnEnviar.disabled = true;
+        btnEnviar.textContent = "Enviando…";
+
+        const datos = buildPayload();
+
+        try {
+          await sendSurvey(datos);
+          form.style.display = 'none';
+          finalMsg.textContent = "👉 Gracias. Tu encuesta fue enviada con éxito.";
+          finalHint.textContent = "Puedes cerrar esta ventana.";
+          finalScreen.style.display = 'block';
+        } catch (err) {
+          form.style.display = 'none';
+          finalMsg.textContent = "⚠️ Hubo un problema al enviar la encuesta.";
+          finalHint.textContent = "Por favor, intenta nuevamente más tarde.";
+          finalScreen.style.display = 'block';
+          console.error("Error enviando encuesta:", err);
+        } finally {
+          btnEnviar.disabled = false;
+          btnEnviar.textContent = "Enviar";
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
